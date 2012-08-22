@@ -1,7 +1,4 @@
-#Results are in Array of Objects format:
-#     [ {}, {}, ... ]
-
-#**parallel** - Better version of async.parallel
+#**parallel** - Sync version of async.parallel
 #    1. Does not return until all functions succeed or fail (true synchronization)
 #    2. The index-order of the functions is maintained between input and output
 #    3. Return values do not exist if universally applied (e.g. there will be no error object if all functions succeed)   
