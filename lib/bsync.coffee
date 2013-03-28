@@ -44,3 +44,44 @@ exports.apply = (fn) ->
   args = Array.prototype.slice.call(arguments, 1)
   return () ->
     return fn.apply null, args.concat(Array.prototype.slice.call(arguments))
+
+###
+  Execute functions in series calling cbEach() after each function executes
+  ---
+  Input (parameters)
+    execFuncs -- Array of applied functions (use bsync.apply)
+    cbEach -- Callback after each execution of a specified function
+    cbDone -- Final callback when execution of all functions is complete
+  Output (calls)
+    cbEach(error, data, stats)
+      error, data -- as reported by execFunc'tion
+      stats -- {completed: x, inTotal: x, withData: x, withErrors: x}
+    cbDone(error, stats) -- a single elma error object if any errors occurred, but that doesn't indicate complete failure. Check stats.
+      stats -- {completed: x, inTotal: x, withData: x, withErrors: x}
+###
+exports.seriesEach = (execFuncs, cbEach, cbDone) ->
+  ready = true; idx = 0; numData = 0; numErrors = 0;
+  stats = (i) ->
+    return {completed: i+1, inTotal: execFuncs.length, withData: numData, withErrors: numErrors}
+  fn = (i) ->
+    try
+      execFuncs[i] (err, data) ->
+        numErrors++ if err? 
+        numData++ if data?
+        cbEach err, data, stats(i)
+        ready = true
+    catch error
+      cbEach error, undefined, stats(i)
+      ready = true
+  sv = () ->
+    if ready is true
+      ready = false 
+      if idx >= execFuncs.length
+        error = if numErrors > 0 then new Error "Series execution resulted in #{numErrors} instances reporting errors." else undefined
+        cbDone error, stats(execFuncs.length-1)
+        return
+      fn idx
+      idx++
+    setImmediate () -> 
+      sv()
+  sv(); return

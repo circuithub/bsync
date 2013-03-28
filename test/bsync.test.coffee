@@ -11,10 +11,26 @@ testFunction = (result, param1, param2, error, cbDone) ->
     return
   cbDone undefined, result
 
+eachFunction = (err, data, stats) ->
+  #console.log "[eachFunction]", err, data, stats
+  return
+
 NUM_FUNCS_TO_TEST = 5
 
 describe "bsync", ->
-  
+  describe "#seriesEach", ->
+    it "should handle mixed succeed/fail cases", (done) ->      
+      workers = []
+      for i in [0...10]
+        workers.push bsync.apply testFunction, i, 1, 2, i%3 is 0
+      bsync.seriesEach workers, eachFunction, (error, stats) ->
+        should.exist error
+        should.exist stats
+        stats.withData.should.equal 6
+        stats.withErrors.should.equal 4
+        console.log "Done!"
+        done()
+
   describe "#parallel", ->
 
     describe "--Object", ->
