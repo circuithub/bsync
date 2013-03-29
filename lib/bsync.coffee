@@ -56,6 +56,7 @@ exports.apply = (fn) ->
     cbEach(error, data, stats)
       error, data -- as reported by execFunc'tion
       stats -- {completed: x, inTotal: x, withData: x, withErrors: x}
+      sequence -- the sequence number (index) from 0; useful for associating it back to input values
     cbDone(error, stats) -- a single elma error object if any errors occurred, but that doesn't indicate complete failure. Check stats.
       stats -- {completed: x, inTotal: x, withData: x, withErrors: x}
 ###
@@ -68,7 +69,7 @@ exports.seriesEach = (execFuncs, cbEach, cbDone) ->
       execFuncs[i] (err, data) ->
         numErrors++ if err? 
         numData++ if data?
-        cbEach err, data, stats(i)
+        cbEach err, data, stats(i), i
         setImmediate sv
     catch error
       cbEach error, undefined, stats(i)

@@ -27,9 +27,10 @@ seriesEach guarantees that each specified function executes in order and that *a
     cbEach -- Callback after each execution of a specified function
     cbDone -- Final callback when execution of all functions is complete
   Output (calls)
-    cbEach(error, data, stats)
+    cbEach(error, data, stats, sequence)
       error, data -- as reported by execFunc'tion
       stats -- {completed: x, inTotal: x, withData: x, withErrors: x}
+      sequence -- the sequence number (index) of the function that just completed execution; useful for referencing the input parameter data
     cbDone(error, stats) -- a single elma error object if any errors occurred, but that doesn't indicate complete failure. Check stats.
       stats -- {completed: x, inTotal: x, withData: x, withErrors: x}
 ###
@@ -41,13 +42,16 @@ exports.seriesEach = (execFuncs, cbEach, cbDone) ->
 ```coffeescript
 #--Load Module
 bsync = require "bsync"
+#--Example Data to Work On
+param1 = [0,1,2,3,4,5,6,7,8,9]
 #--Define eachFunction; The eachFunction is called after each workFunction completes or crashes
-eachFunction = (err, data, stats) ->
-	console.log "[eachFunction]", err, data, stats
+eachFunction = (err, data, stats, sequence) ->
+	console.log "[eachFunction]", err, data, stats, sequence
+	console.log "The input to this function for param1 was", param1[sequence] #In case you need to reference it for retry-style operations; Make sure to keep the input data in context
 	return
 #--Apply Work Functions
-for i in [0...10]
-	workers.push bsync.apply theWorkFunction, param1, param2   #note: omit callback parameter
+for i in [0...10] #i = 0 to 9 using coffeescript notation
+	workers.push bsync.apply theWorkFunction, param1[i], param2   #note: omit callback parameter
 #--Execute Work Functions
 bsync.seriesEach workers, eachFunction, (error, stats) ->
 	console.log stats
