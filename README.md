@@ -2,7 +2,13 @@
 bsync
 =====
 
-Async++
+Async++ =)
+
+A better/different control flow library for node.js. Designed for task-independent parallelism where specified functions are all guaranteed to execute even if some fail.
+
+## parallel
+
+### Example
 
 ## seriesWith
 
@@ -46,3 +52,7 @@ for i in [0...10]
 bsync.seriesEach workers, eachFunction, (error, stats) ->
 	console.log stats
 ```
+
+## apply
+
+### Example
