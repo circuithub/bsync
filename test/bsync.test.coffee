@@ -12,7 +12,7 @@ testFunction = (result, param1, param2, error, cbDone) ->
   cbDone undefined, result
 
 eachFunction = (err, data, stats) ->
-  #console.log "[eachFunction]", err, data, stats
+  console.log "[eachFunction]", err, data, stats
   return
 
 NUM_FUNCS_TO_TEST = 5
