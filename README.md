@@ -29,3 +29,20 @@ seriesEach guarantees that each specified function executes in order and that *a
 ###
 exports.seriesEach = (execFuncs, cbEach, cbDone) ->
 ```
+
+### Example
+
+```coffeescript
+#--Load Module
+bsync = require "bsync"
+#--Define eachFunction; The eachFunction is called after each workFunction completes or crashes
+eachFunction = (err, data, stats) ->
+	console.log "[eachFunction]", err, data, stats
+	return
+#--Apply Work Functions
+for i in [0...10]
+	workers.push bsync.apply theWorkFunction, param1, param2   #note: omit callback parameter
+#--Execute Work Functions
+bsync.seriesEach workers, eachFunction, (error, stats) ->
+	console.log stats
+```
