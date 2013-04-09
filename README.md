@@ -46,13 +46,13 @@ bsync = require "bsync"
 #--Example Data to Work On
 param1 = [0,1,2,3,4,5,6,7,8,9]
 #--Define eachFunction; The eachFunction is called after each workFunction completes or crashes
-eachFunction = (err, data, stats, sequence) ->
+eachFunction = (err, data, stats, sequence, next) ->
 	console.log "[eachFunction]", err, data, stats, sequence
 	console.log "The input to this function for param1 was", param1[sequence] #In case you need to reference it for retry-style operations; Make sure to keep the input data in context
-	return
+	next(); return
 #--Apply Work Functions
 for i in [0...10] #i = 0 to 9 using coffeescript notation
-	workers.push bsync.apply theWorkFunction, param1[i], param2   #note: omit callback parameter
+	workers.push bsync.apply theWorkFunction, param1[i], param2   #note: comma after function name and omit callback parameter
 #--Execute Work Functions
 bsync.seriesEach workers, eachFunction, (error, stats) ->
 	console.log stats
