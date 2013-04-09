@@ -69,11 +69,11 @@ exports.seriesEach = (execFuncs, cbEach, cbDone) ->
       execFuncs[i] (err, data) ->
         numErrors++ if err? 
         numData++ if data?
-        cbEach err, data, stats(i), i
-        setImmediate sv
+        cbEach err, data, stats(i), i, () ->
+          setImmediate sv
     catch error
-      cbEach error, undefined, stats(i)
-      setImmediate sv
+      cbEach error, undefined, stats(i), i, () ->
+        setImmediate sv
   sv = () ->
     if idx >= execFuncs.length
       error = if numErrors > 0 then new Error "Series execution resulted in #{numErrors} instances reporting errors." else undefined

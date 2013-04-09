@@ -27,11 +27,12 @@ seriesEach guarantees that each specified function executes in order and that *a
     cbEach -- Callback after each execution of a specified function
     cbDone -- Final callback when execution of all functions is complete
   Output (calls)
-    cbEach(error, data, stats, sequence)
+    cbEach(error, data, stats, sequence, next)
       error, data -- as reported by execFunc'tion
       stats -- {completed: x, inTotal: x, withData: x, withErrors: x}
       sequence -- the sequence number (index) of the function that just completed execution; useful for referencing the input parameter data
-    cbDone(error, stats) -- a single elma error object if any errors occurred, but that doesn't indicate complete failure. Check stats.
+      next -- Callback when ready to start the next execution in the series sequence (usage: next() )
+    cbDone(error, stats) -- a single error object if any errors occurred, but that doesn't indicate complete failure. Check stats.
       stats -- {completed: x, inTotal: x, withData: x, withErrors: x}
 ###
 exports.seriesEach = (execFuncs, cbEach, cbDone) ->
