@@ -15,10 +15,11 @@ exports.parallel = (parallelFuncs, callback) ->
     callback undefined, if Array.isArray parallelFuncs then [] else {}
     return
   counter = keys.length 
-  blockUntilFinished = (index) -> (errors, results) ->
-    if errors
+
+  sv = (errors, results, index) ->
+    if errors?
       allErrors[index] = errors
-    if results
+    if results?
       allResults[index] = results
     --counter
     if counter == 0
@@ -26,7 +27,7 @@ exports.parallel = (parallelFuncs, callback) ->
       numErrored++ for i in keys when allErrors[i]?           
       if numErrored is 0        
         callback undefined, allResults
-      else        
+      else
         if numErrored is keys.length
           # all failed
           callback allErrors, undefined
@@ -35,10 +36,16 @@ exports.parallel = (parallelFuncs, callback) ->
           callback allErrors, allResults
     return
 
+  blockUntilFinished = (index) -> (errors, results) ->
+    setImmediate () ->
+      sv errors, results, index
   for i in keys
     f = parallelFuncs[i]
     f blockUntilFinished i
   return
+
+  
+
 
 exports.apply = (fn) ->
   args = Array.prototype.slice.call(arguments, 1)

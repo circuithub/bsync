@@ -11,9 +11,9 @@ testFunction = (result, param1, param2, error, cbDone) ->
     return
   cbDone undefined, result
 
-eachFunction = (err, data, stats) ->
-  console.log "[eachFunction]", err, data, stats
-  return
+eachFunction = (err, data, stats, sequence, next) ->
+  console.log "[eachFunction]", err, data, stats, sequence
+  next()
 
 NUM_FUNCS_TO_TEST = 5
 
