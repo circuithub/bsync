@@ -10,7 +10,7 @@ A better/different control flow library for node.js. Designed for task-independe
 
 ### Example
 
-## seriesWith
+## seriesEach
 
 Executes specified functions in series
 
