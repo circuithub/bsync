@@ -37,7 +37,7 @@ exports.parallel = (parallelFuncs, callback) ->
     return
 
   blockUntilFinished = (index) -> (errors, results) ->
-    setImmediate () ->
+    process.nextTick () ->
       sv errors, results, index
   for i in keys
     f = parallelFuncs[i]
