@@ -86,7 +86,7 @@ exports.seriesEach = (execFuncs, cbEach, cbDone) ->
       error = if numErrors > 0 then new Error "Series execution resulted in #{numErrors} instances reporting errors." else undefined
       cbDone error, stats(execFuncs.length-1)
       return        
-    idx++
     fn idx    
+    idx++
     return
   sv(); return
